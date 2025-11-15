@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EVERYTHING MART GENERAL SUPPLIES — Quote Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://i.ibb.co/chhK7Hf4/EVERYTHING-MART-Logo-c.png" rel="icon" type="image/png">
+<link href="https://i.ibb.co/chhK7Hf4/EVERYTHING-MART-Logo-c.png" rel="everything mart ls">
+
+<style>
+:root {
+  --accent:#0f4f51;
+  --muted:#666;
+  --card:#fff;
+  --bg:#f4f6fb;
+  --border:#e6eefc;
+  --header-bg:#f0f4ff;
+  --row-alt:#f9fbff;
+  --row-hover:#eef3ff;
+}
+
+body { font-family:'Poppins',sans-serif; margin:0; background:var(--bg); color:#111; }
+.container { max-width:900px; margin:28px auto; padding:20px; }
+
+h2,h3{ margin:0 0 8px; }
+label { font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
+
+input, select, textarea {
+  width:100%; padding:10px 12px; border-radius:6px; border:1px solid var(--border);
+  font-size:14px; box-sizing:border-box; margin-bottom:12px;
+}
+input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); background:#fbfeff; }
+
+button { background:var(--accent); color:#fff; border:0; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:14px; transition:0.2s; margin-right:8px; margin-bottom:12px; }
+button:hover{ opacity:0.9; }
+button.secondary{ background:#fff; color:var(--accent); border:1px solid var(--accent); }
+
+.small{ font-size:13px; color:var(--muted); }
+
+table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; table-layout:fixed; word-wrap:break-word; }
+th, td { padding:12px 8px; border-bottom:1px solid var(--border); text-align:left; }
+th { background:var(--header-bg); font-weight:700; }
+tr:nth-child(even) td { background:var(--row-alt); }
+tr:hover td { background:var(--row-hover); }
+th.qty, td.qty { width:64px; }
+th.price, td.price, th.total, td.total { width:120px; }
+
+.totals {
+  margin-top:16px; max-width:400px; float:right;
+  background:var(--header-bg); padding:16px 20px; border-radius:8px; font-size:14px;
+}
+.totals .row { display:flex; justify-content:space-between; padding:6px 0; }
+.totals .grand-total { font-weight:700; font-size:18px; border-top:1px solid #d0e0ff; padding-top:8px; margin-top:4px; }
+
+.flex { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px; }
+.flex-between { display:flex; justify-content:space-between; align-items:flex-start; }
+
+@media(max-width:700px){
+  .flex-between { flex-direction:column; gap:12px; }
+  .totals { float:none; width:100%; }
+}
+.form-card {
+  background:#fff;
+  padding:24px;
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom:24px;
+}
+
+.form-card h3 {
+  font-weight:600;
+  margin-bottom:20px;
+  font-size:18px;
+  color:var(--accent);
+  border-bottom:1px solid #e6eefc;
+  padding-bottom:8px;
+}
+
+.form-actions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+
+.items-table-wrapper {
+  overflow-x:auto;
+  margin-bottom:12px;
+}
+
+.items-table-wrapper table {
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+.items-table-wrapper th,
+.items-table-wrapper td {
+  padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+
+.items-table-wrapper th {
+  background:var(--header-bg);
+  font-weight:600;
+}
+
+.items-table-wrapper td input {
+  width:100%;
+  padding:6px 8px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  font-size:14px;
+  box-sizing:border-box;
+}
+
+.items-table-wrapper td .delete-row {
+  padding:6px 10px;
+  background:#0f4f51;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.items-table-wrapper td .delete-row:hover {
+  opacity:0.9;
+}
+
+@media(max-width:600px){
+  .items-table-wrapper th, .items-table-wrapper td {
+    font-size:13px;
+    padding:6px 6px;
+  }
+  .items-table-wrapper td input {
+    font-size:13px;
+    padding:4px 6px;
+  }
+  .items-table-wrapper td .delete-row {
+    padding:4px 6px;
+    font-size:12px;
+  }
+}
+
+@media print{
+  .form-card, button { display:none; }
+  .preview-card { box-shadow:none; margin:0; border-radius:0; background:#fff; width:100%; }
+}
+
+/* FLEX FOOTER STYLING */
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--card);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+}
+
+.preview-content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#pdfFooter {
+  border-top:1px solid #ccc;
+  padding:10px 20px;
+  font-size:12px;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- FORM -->
+  <div class="form-card">
+    <h3 style="display:flex; align-items:center; gap:12px;">
+      <img src="https://i.ibb.co/chhK7Hf4/EVERYTHING-MART-Logo-c.png" alt="Logo" style="max-width:40px; border-radius:8px;">
+      Everything Mart General Supplies — Quote Form
+    </h3>
+
+    <label>BILL TO - Client Name</label>
+    <input type="text" id="clientName" value="TANKISO KOTSANE">
+
+    <label>Client Address</label>
+    <textarea id="clientAddress" rows="3">Roodeport
+Cell: 0645012461</textarea>
+
+    <div class="flex">
+      <div style="flex:1;"><label>Quote #</label><input id="quoteNumber" value="QUO0010348"></div>
+      <div style="flex:1;"><label>Date</label><input type="date" id="quoteDate" value="2025-11-11"></div>
+      <div style="flex:1;"><label>Currency</label>
+        <select id="currency">
+          <option selected>M</option>
+          <option>R</option>
+          <option>$</option>
+          <option>€</option>
+          <option>£</option>
+        </select>
+      </div>
+    </div>
+
+    <h3>Items</h3>
+    <div class="items-table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Description</th><th class="qty">Qty</th><th class="price">Unit Price</th><th class="total">Total</th><th></th></tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="form-actions">
+      <button id="addItem">+ Add Item</button>
+      <button id="loadSample" class="secondary">Load Sample</button>
+    </div>
+
+    <label>Overall Discount %</label>
+    <input type="number" id="overallDiscount" value="0" min="0" max="100">
+
+    <div class="form-actions">
+      <button id="downloadPdf">Download PDF</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-card" id="previewCard">
+    <div class="preview-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div>
+          <h2>EVERYTHING MART G. S.</h2>
+          <div class="small">
+            Address: Carlton Centre, Maseru 100<br>
+            IBR: 82378, Registration No: A2025/19232<br>
+            Phone: [+266] 6827 7512
+          </div>
+        </div>
+        <div><img src="https://i.ibb.co/chhK7Hf4/EVERYTHING-MART-Logo-c.png" alt="Logo" style="max-width:130px;border-radius:8px;"></div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <div>
+          <strong>BILL TO</strong><br>
+          <span id="previewClientName"></span><br>
+          <span id="previewClientAddress"></span>
+        </div>
+        <div>
+          <strong>QUOTE DETAILS</strong><br>
+          Quote #: <span id="previewQuoteNumber"></span><br>
+          Date: <span id="previewQuoteDate"></span><br>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Description</th><th class="qty">Qty</th><th class="price">Unit Price</th><th class="total">Total</th></tr>
+        </thead>
+        <tbody id="previewItemsBody"></tbody>
+      </table>
+
+      <div class="totals">
+        <div class="row"><div>Total Discount:</div><div id="previewTotalDiscount"></div></div>
+        <div class="row"><div>Total Exclusive:</div><div id="previewTotalExclusive"></div></div>
+        <div class="row grand-total"><div>Grand Total:</div><div id="previewGrandTotal"></div></div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    <div id="pdfFooter">
+      <div style="margin-bottom:6px;">
+          <span><i class="fas fa-phone"></i> [+266] 6827 7512 | 5738 9368</span> &nbsp;|&nbsp;
+        <span><i class="fas fa-envelope"></i> lefamotai@yahoo.com</span>
+      </div>
+      <div>• THANK YOU FOR YOUR BUSINESS •  <span class="pageNumber"></span></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+<script>
+  const e = id => document.getElementById(id);
+let items = [];
+
+// Format currency with selected symbol
+function fmt(n){
+  const cur = e("currency").value;
+  return cur + Number(n).toLocaleString(undefined,{minimumFractionDigits:2});
+}
+
+// Render the table rows and preview
+function renderTable() {
+  const tbody = e("itemsBody");
+  const previewTbody = e("previewItemsBody");
+  tbody.innerHTML = "";
+  previewTbody.innerHTML = "";
+
+  items.forEach((it, idx) => {
+    // FORM ROW
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" class="item-desc" data-idx="${idx}" value="${it.desc}"></td>
+      <td class="qty"><input type="text" class="item-qty" data-idx="${idx}" value="${it.qty}"></td>
+      <td class="price"><input type="text" class="item-price" data-idx="${idx}" value="${it.price}"></td>
+      <td class="total">${fmt(it.qty * it.price)}</td>
+      <td><button class="delete-row" data-idx="${idx}">X</button></td>`;
+    tbody.appendChild(tr);
+
+    // PREVIEW ROW
+    const trPrev = document.createElement("tr");
+    trPrev.innerHTML = `
+      <td>${it.desc}</td>
+      <td>${it.qty}</td>
+      <td>${fmt(it.price)}</td>
+      <td>${fmt(it.qty * it.price)}</td>`;
+    previewTbody.appendChild(trPrev);
+  });
+
+  updateTotals();
+}
+
+// Update totals and preview without touching input fields
+function updateTotals() {
+  let totalExcl = 0;
+  items.forEach(it => totalExcl += it.qty * it.price);
+  const discount = Number(e("overallDiscount").value) || 0;
+
+  e("previewTotalDiscount").innerText = fmt(discount);
+  e("previewTotalExclusive").innerText = fmt(totalExcl);
+  e("previewGrandTotal").innerText = fmt(totalExcl - discount);
+
+  // Update preview table (if items change)
+  const previewRows = e("previewItemsBody").children;
+  items.forEach((it, idx) => {
+    if(previewRows[idx]){
+      previewRows[idx].children[0].innerText = it.desc;
+      previewRows[idx].children[1].innerText = it.qty;
+      previewRows[idx].children[2].innerText = fmt(it.price);
+      previewRows[idx].children[3].innerText = fmt(it.qty * it.price);
+    }
+  });
+}
+
+// Handle live input in item fields
+e("itemsBody").addEventListener("input", ev => {
+  const idx = ev.target.dataset.idx;
+  if(ev.target.classList.contains("item-desc")){
+    items[idx].desc = ev.target.value;
+  }
+  if(ev.target.classList.contains("item-qty")){
+    let val = ev.target.value.replace(/\D/g,''); // only numbers
+    ev.target.value = val;
+    items[idx].qty = Number(val) || 0;
+  }
+  if(ev.target.classList.contains("item-price")){
+    let val = parseFloat(ev.target.value.replace(/,/g,'')) || 0;
+    ev.target.value = val;
+    items[idx].price = val;
+  }
+  updateTotals();
+});
+
+// Delete item
+e("itemsBody").addEventListener("click", ev => {
+  if(ev.target.classList.contains("delete-row")){
+    items.splice(ev.target.dataset.idx, 1);
+    renderTable();
+  }
+});
+
+// Add new item
+e("addItem").addEventListener("click", () => {
+  items.push({desc:"New Item", qty:1, price:0});
+  renderTable();
+});
+
+// Load sample items
+e("loadSample").addEventListener("click", () => {
+  items = [
+    {desc:'HP 136A', qty:12, price:1150},
+    {desc:'HP 30A', qty:12, price:1200},
+    {desc:'Courier', qty:1, price:550}
+  ];
+  renderTable();
+});
+
+// Overall discount input
+e("overallDiscount").addEventListener("input", updateTotals);
+
+// Update client/quote inputs
+["clientName","clientAddress","quoteNumber","quoteDate","currency"].forEach(id => {
+  e(id).addEventListener("input", () => {
+    const previewId = "preview" + id.charAt(0).toUpperCase() + id.slice(1);
+    if(e(previewId)) e(previewId).innerText = e(id).value;
+  });
+});
+
+// PDF generation
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10;
+
+  const previewCard = e("previewCard");
+  const previewContent = previewCard.querySelector(".preview-content");
+  const pdfFooter = e("pdfFooter");
+
+  const canvasContent = await html2canvas(previewContent, { scale: 3, useCORS: true, scrollY: -window.scrollY });
+  const imgDataContent = canvasContent.toDataURL('image/jpeg', 1.0);
+
+  const canvasFooter = await html2canvas(pdfFooter, { scale: 3, useCORS: true });
+  const imgDataFooter = canvasFooter.toDataURL('image/png');
+
+  const imgProps = pdf.getImageProperties(imgDataContent);
+  const contentHeightMM = (imgProps.height * (pageWidth - 2*margin)) / imgProps.width;
+  const footerProps = pdf.getImageProperties(imgDataFooter);
+  const footerHeightScaled = (footerProps.height * (pageWidth - 2*margin)) / footerProps.width;
+
+  const usablePageHeight = pageHeight - footerHeightScaled - margin*2;
+  let position = 0;
+  const totalPages = Math.ceil(contentHeightMM / usablePageHeight);
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    pdf.addImage(imgDataContent, 'JPEG', margin, margin - position, pageWidth - 2*margin, contentHeightMM);
+    pdf.addImage(imgDataFooter, 'PNG', margin, pageHeight - footerHeightScaled - margin, pageWidth - 2*margin, footerHeightScaled);
+    position += usablePageHeight;
+    if (pageNum < totalPages) pdf.addPage();
+  }
+
+  const client = e("clientName").value.trim().replace(/\s+/g, "_");
+  const quoteNo = e("quoteNumber").value.trim().replace(/\s+/g, "_");
+  pdf.save(`${client}_${quoteNo}.pdf`);
+}
+
+e("downloadPdf").addEventListener("click", generatePDF);
+
+// Initial render
+renderTable();
+
+// Initialize preview fields
+["ClientName","ClientAddress","QuoteNumber","QuoteDate","Currency"].forEach(id => {
+  const inputId = id.charAt(0).toLowerCase() + id.slice(1);
+  const previewId = "preview" + id;
+  if(e(inputId) && e(previewId)) e(previewId).innerText = e(inputId).value;
+});
+
+</script>
+
+</body>
+</html>
